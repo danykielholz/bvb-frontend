@@ -16,21 +16,23 @@ export default function Home() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           brand_name: brand,
-          keywords: keywords.split(",").map(k => k.trim()),
+          keywords: keywords.split(",").map((k) => k.trim()),
         }),
       });
       const data = await res.json();
       setResult(data.brand_vision_board || JSON.stringify(data, null, 2));
-    } catch (err) {
+    } catch {
       setResult("⚠️ Fehler bei der Generierung – bitte API prüfen.");
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   return (
     <main className="min-h-screen flex flex-col items-center justify-center bg-gray-50 p-6">
       <div className="max-w-2xl w-full bg-white rounded-2xl shadow-md p-6">
         <h1 className="text-3xl font-bold text-center mb-4 text-gray-900">BVB.ai Generator</h1>
+
         <input
           type="text"
           placeholder="Markenname"
@@ -38,6 +40,7 @@ export default function Home() {
           value={brand}
           onChange={(e) => setBrand(e.target.value)}
         />
+
         <input
           type="text"
           placeholder="Keywords (Komma-getrennt)"
@@ -45,6 +48,7 @@ export default function Home() {
           value={keywords}
           onChange={(e) => setKeywords(e.target.value)}
         />
+
         <button
           onClick={generate}
           disabled={loading}
@@ -52,6 +56,7 @@ export default function Home() {
         >
           {loading ? "Generiere..." : "Brand Vision Board erstellen"}
         </button>
+
         {result && (
           <pre className="mt-6 whitespace-pre-wrap text-sm text-gray-700">{result}</pre>
         )}
